@@ -6,6 +6,7 @@
  */
 package com.bridgelabz.jdbcmain;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class EmployeePayrollService {
@@ -43,15 +44,22 @@ public class EmployeePayrollService {
             employeePayrollData.salary = salary;
     }
 
+    public boolean checkEmployeePayrollInSyncWithDB(String name) throws EmployeePayrollException {
+        List<EmployeePayrollData> employeePayrollDataList = employeePayrollDBService.getEmployeePayrollData(name);
+        return employeePayrollDataList.get(0).equals(getEmployeePayrollData(name));
+    }
+
     private EmployeePayrollData getEmployeePayrollData(String name) {
         return this.employeePayrollList.stream()
-                .filter(employeePayrollData -> employeePayrollData.name.equals(name))
+                .filter(employeePayrollDataItem -> employeePayrollDataItem.name.equals(name))
                 .findFirst()
                 .orElse(null);
     }
 
-    public boolean checkEmployeePayrollInSyncWithDB(String name) throws EmployeePayrollException {
-        List<EmployeePayrollData> employeePayrollDataList = EmployeePayrollDBService.getInstance().getEmployeePayrollData(name);
-        return employeePayrollDataList.get(0).equals(getEmployeePayrollData(name));
+    public List<EmployeePayrollData> readEmployeePayrollForDateRange(
+            IOService ioService, LocalDate startDate, LocalDate endDate) throws EmployeePayrollException {
+        if( ioService.equals(IOService.DB_IO))
+            return employeePayrollDBService.getEmployeeForDateRange(startDate, endDate);
+        return null;
     }
 }

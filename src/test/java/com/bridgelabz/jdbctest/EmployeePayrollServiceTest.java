@@ -13,6 +13,8 @@ import com.bridgelabz.jdbcmain.EmployeePayrollService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.jupiter.api.Test;
+
+import java.time.LocalDate;
 import java.util.List;
 
 public class EmployeePayrollServiceTest {
@@ -25,23 +27,35 @@ public class EmployeePayrollServiceTest {
 
     @Test
     public void givenEmployeePayrollInDB_WhenRetrieved_ShouldMatchEmployeeCount() throws EmployeePayrollException {
-        List<EmployeePayrollData> employeePayrollData = employeePayrollService.readEmployeePayrollData(EmployeePayrollService.IOService.DB_IO);
-        Assert.assertEquals(4, employeePayrollData.size());
+        List<EmployeePayrollData> employeePayrollData = employeePayrollService.readEmployeePayrollData(
+                EmployeePayrollService.IOService.DB_IO);
+        Assert.assertEquals(3, employeePayrollData.size());
     }
 
     @Test
     public void givenNewSalaryForEmployee_WhenUpdated_ShouldSyncWithDB() throws EmployeePayrollException {
-        List<EmployeePayrollData> employeePayrollData = employeePayrollService.readEmployeePayrollData(EmployeePayrollService.IOService.DB_IO);
-        employeePayrollService.updateEmployeeSalary("Terissa", 3000000.00);
-        boolean result = employeePayrollService.checkEmployeePayrollInSyncWithDB("Terissa");
+        employeePayrollService.readEmployeePayrollData(EmployeePayrollService.IOService.DB_IO);
+        employeePayrollService.updateEmployeeSalary("Terisa", 200000.00);
+        boolean result = employeePayrollService.checkEmployeePayrollInSyncWithDB("Terisa");
         Assert.assertTrue(result);
     }
 
     @Test
-    public void givenNewSalaryForEmployee_WhenUpdated_ShouldSyncWithDBUsingPreparedStatement() throws EmployeePayrollException {
-        List<EmployeePayrollData> employeePayrollData = employeePayrollService.readEmployeePayrollData(EmployeePayrollService.IOService.DB_IO);
-        employeePayrollService.updateEmployeeSalaryUsingPreparedStatement("Terissa", 5000000.00);
-        boolean result = employeePayrollService.checkEmployeePayrollInSyncWithDB("Terissa");
+    public void givenNewSalaryForEmployee_WhenUpdated_ShouldSyncWithDBUsingPreparedStatement() throws
+            EmployeePayrollException {
+        employeePayrollService.readEmployeePayrollData(EmployeePayrollService.IOService.DB_IO);
+        employeePayrollService.updateEmployeeSalaryUsingPreparedStatement("Terisa", 200000.00);
+        boolean result = employeePayrollService.checkEmployeePayrollInSyncWithDB("Terisa");
         Assert.assertTrue(result);
+    }
+
+    @Test
+    public void givenDateRange_WhenRetrieved_ShouldMatchTheEmployeeCount() throws EmployeePayrollException {
+        employeePayrollService.readEmployeePayrollData(EmployeePayrollService.IOService.DB_IO);
+        LocalDate startDate = LocalDate.of(2019, 03, 05);
+        LocalDate endDate = LocalDate.now();
+        List<EmployeePayrollData> employeePayrollData = employeePayrollService.readEmployeePayrollForDateRange(
+                EmployeePayrollService.IOService.DB_IO, startDate, endDate);
+        Assert.assertEquals(3, employeePayrollData.size());
     }
 }

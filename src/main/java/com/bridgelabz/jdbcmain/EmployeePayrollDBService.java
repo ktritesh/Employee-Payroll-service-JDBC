@@ -54,7 +54,8 @@ public class EmployeePayrollDBService {
             Statement statement = connection.createStatement();
             return statement.executeUpdate(sql);
         } catch (SQLException e) {
-            throw new EmployeePayrollException("Please check the updateEmployeeDataUsingStatement() for detailed information!");
+            throw new EmployeePayrollException("Please check the updateEmployeeDataUsingStatement() " +
+                    "for detailed information!");
         }
     }
 
@@ -67,7 +68,8 @@ public class EmployeePayrollDBService {
 
             return statement.executeUpdate();
         } catch (SQLException e) {
-            throw new EmployeePayrollException("Please check the updateEmployeeDataUsingPreparedStatement() for detailed information!");
+            throw new EmployeePayrollException("Please check the updateEmployeeDataUsingPreparedStatement() " +
+                    "for detailed information!");
         }
     }
 
@@ -80,7 +82,8 @@ public class EmployeePayrollDBService {
             ResultSet resultSet = employeePayrollDataStatement.executeQuery();
             employeePayrollList = this.getEmployeePayrollData(resultSet);
         } catch (SQLException e) {
-            throw new EmployeePayrollException("Please check the getEmployeePayrollData(name) for detailed information!");
+            throw new EmployeePayrollException("Please check the getEmployeePayrollData(name) " +
+                    "for detailed information!");
         }
         return employeePayrollList;
     }
@@ -96,7 +99,8 @@ public class EmployeePayrollDBService {
                 employeePayrollList.add(new EmployeePayrollData(id, name, salary, startDate));
             }
         } catch (SQLException e) {
-            throw new EmployeePayrollException("Please check the getEmployeePayrollData(resultSet) for detailed information!");
+            throw new EmployeePayrollException("Please check the getEmployeePayrollData(resultSet) " +
+                    "for detailed information!");
         }
         return employeePayrollList;
     }
@@ -107,7 +111,8 @@ public class EmployeePayrollDBService {
             String sql = "SELECT * FROM employee_payroll WHERE name = ?";
             employeePayrollDataStatement = connection.prepareStatement(sql);
         } catch (SQLException e) {
-            throw new EmployeePayrollException("Please check the preparedStatementForEmployeeData() for detailed information!");
+            throw new EmployeePayrollException("Please check the preparedStatementForEmployeeData() " +
+                    "for detailed information!");
         }
     }
 
@@ -124,8 +129,16 @@ public class EmployeePayrollDBService {
                 employeePayrollList.add(new EmployeePayrollData(id, name, salary, startDate));
             }
         } catch (SQLException e) {
-            throw new EmployeePayrollException("Please check the getEmployeePayrollDataUsingDB() for detailed information!");
+            throw new EmployeePayrollException("Please check the getEmployeePayrollDataUsingDB() " +
+                    "for detailed information!");
         }
         return employeePayrollList;
+    }
+
+    public List<EmployeePayrollData> getEmployeeForDateRange(LocalDate startDate, LocalDate endDate) throws
+            EmployeePayrollException {
+        String sql = String.format("SELECT * FROM employee_payroll WHERE START BETWEEN '%s' AND '%s';",
+                Date.valueOf(startDate), Date.valueOf(endDate));
+        return getEmployeePayrollDataUsingDB(sql);
     }
 }
