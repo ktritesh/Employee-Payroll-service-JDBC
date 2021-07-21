@@ -19,11 +19,6 @@ public class EmployeePayrollService {
         employeePayrollDBService = EmployeePayrollDBService.getInstance();
     }
 
-//    public EmployeePayrollService(List<EmployeePayrollData>employeePayrollList){
-//        this();
-//        this.employeePayrollList = employeePayrollList;
-//    }
-
     public List<EmployeePayrollData> readEmployeePayrollData(IOService ioService) throws EmployeePayrollException {
         if(ioService.equals(IOService.DB_IO))
             this.employeePayrollList = employeePayrollDBService.readData();
@@ -31,10 +26,21 @@ public class EmployeePayrollService {
     }
 
     public void updateEmployeeSalary(String name, double salary) throws EmployeePayrollException {
-        int result = EmployeePayrollDBService.getInstance().updateEmployeeData(name, salary);
-        if (result == 0) return;
+        int result = employeePayrollDBService.updateEmployeeData(name, salary);
+        if(result == 0)
+            return;
         EmployeePayrollData employeePayrollData = this.getEmployeePayrollData(name);
-        if (employeePayrollData != null) employeePayrollData.salary = salary;
+        if( employeePayrollData != null )
+            employeePayrollData.salary = salary;
+    }
+
+    public void updateEmployeeSalaryUsingPreparedStatement(String name, double salary) throws EmployeePayrollException {
+        int result = employeePayrollDBService.updateEmployeeDataPreparedStatement(name, salary);
+        if(result == 0)
+            return;
+        EmployeePayrollData employeePayrollData = this.getEmployeePayrollData(name);
+        if( employeePayrollData != null )
+            employeePayrollData.salary = salary;
     }
 
     private EmployeePayrollData getEmployeePayrollData(String name) {
